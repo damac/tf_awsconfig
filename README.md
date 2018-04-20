@@ -1,6 +1,6 @@
 # AWS Config - Config Baseline with AWS Managed Rules
 
-Config_Baseline creates the base configuration for AWS Config with logging being delivered into a dedicated bucket in the same region. Messages are also delivered to a region specific SNS Topic and a region specific SQS queue is subscribed (if selected).
+tf_awsconfig creates the base configuration for AWS Config within a single region, logging is delivered into a dedicated bucket in the same region. Messages are also delivered to a region specific SNS Topic and a region specific SQS queue is subscribed to that topic. 17 managed rules are supported. (see below)
 
 ## Resources Created
 
