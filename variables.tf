@@ -1,12 +1,10 @@
 variable "aws_region" {
-  type = "string"
   description = "aws region"
-  default = "us-east-1"
+  type = "string"
 }
 
 variable "account_alias" {
   description = "The account_alias is used for a resource identification prefix."
-  default = "test"
   type = "string"
 }
 
@@ -38,12 +36,12 @@ variable "password_require_numbers" {
 
 variable "password_min_length" {
   description = "Password minimum length."
-  default     = 14
+  default     = 20
 }
 
 variable "password_reuse_prevention" {
   description = "Number of passwords before allowing reuse."
-  default     = 24
+  default     = 12
 }
 
 variable "password_max_age" {

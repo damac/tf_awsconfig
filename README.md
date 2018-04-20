@@ -52,3 +52,22 @@ tf_awsconfig creates the base configuration for AWS Config within a single regio
     1. s3BucketName
     1. snsTopicArn
     1. cloudWatchLogsLogGroupArn
+
+## Implementation
+
+Required Vars:
+
+- aws_region
+- account_alias
+
+Note: account_alias is used as a resource prefix.
+Example:
+```
+module "aws_config" {
+  source = "../modules/tf_awsconfig"
+
+  aws_region = "us-east-1"
+  account_alias = "testalias"
+
+}
+```
