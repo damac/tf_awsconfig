@@ -1,3 +1,28 @@
+data "template_file" "config_iam_password_policy" {
+  template = "${file("${path.module}/policies/rule-iam-password-policy.tpl")}"
+
+  vars = {
+    password_require_uppercase = "${var.password_require_uppercase ? "true" : "false"}"
+    password_require_lowercase = "${var.password_require_lowercase ? "true" : "false"}"
+    password_require_symbols   = "${var.password_require_symbols ? "true" : "false"}"
+    password_require_numbers   = "${var.password_require_numbers ? "true" : "false"}"
+    password_min_length        = "${var.password_min_length}"
+    password_reuse_prevention  = "${var.password_reuse_prevention}"
+    password_max_age           = "${var.password_max_age}"
+  }
+}
+
+data "template_file" "config_required_tags_policy" {
+  template = "${file("${path.module}/policies/rule-required-tags-policy.tpl")}"
+
+  vars = {
+    tagValue1 = "${var.tag_value_1}"
+    tagValue2 = "${var.tag_value_2}"
+    tagValue3 = "${var.tag_value_3}"
+
+  }
+}
+
 resource "aws_config_config_rule" "managed-rule-01" {
   name        = "S3_BUCKET_VERSIONING_ENABLED"
   description = "Checks whether versioning is enabled for your S3 buckets. Optionally, the rule checks if MFA delete is enabled for your S3 buckets."
@@ -25,8 +50,7 @@ resource "aws_config_config_rule" "managed-rule-03" {
   description = "Checks whether your resources have the tags that you specify. For example, you can check whether your EC2 instances have the 'CostCenter' tag. Separate multiple values with commas."
   depends_on  = ["aws_config_configuration_recorder.config_recorder"]
 
-  #Convert this to a list later
-  input_parameters = "{\"tag1Key\": \"Name\",\"tag2Key\": \"Owner\",\"tag3Key\": \"BudgetCode\"}"
+  input_parameters = "${data.template_file.config_required_tags_policy.rendered}"
 
   source {
     owner             = "AWS"
@@ -37,8 +61,9 @@ resource "aws_config_config_rule" "managed-rule-03" {
 resource "aws_config_config_rule" "managed-rule-04" {
   name             = "IAM_PASSWORD_POLICY"
   description      = "Checks whether the account password policy for IAM users meets the specified requirements."
-  input_parameters = "{\"RequireUppercaseCharacters\":\"true\",\"RequireLowercaseCharacters\":\"true\",\"RequireSymbols\":\"true\",\"RequireNumbers\":\"true\",\"MinimumPasswordLength\":\"8\",\"PasswordReusePrevention\":\"false\",\"MaxPasswordAge\":\"120\"}"
   depends_on       = ["aws_config_configuration_recorder.config_recorder"]
+
+  input_parameters = "${data.template_file.config_iam_password_policy.rendered}"
 
   source {
     owner             = "AWS"

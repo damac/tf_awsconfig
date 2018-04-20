@@ -1,28 +1,13 @@
-# Terraform Module: tf_awsconfig
-terraform module for 'AWS Config' base service
-
 # AWS Config - Config Baseline with AWS Managed Rules
 
-Config_Baseline creates the base configuration for AWS Config in Prod region (us-east-1) and DR region (us-west-2) with logging being delivered into a dedictaed bucket in the Audit account in Prod (us-east-1), this bucket is replicated to our DR region (us-west-2). Messages are also delivered to a per region SNS Topic and an regional SQS queue is subscribed.
+Config_Baseline creates the base configuration for AWS Config with logging being delivered into a dedicated bucket in the same region. Messages are also delivered to a region specific SNS Topic and a region specific SQS queue is subscribed (if selected).
 
-## Resources Created in Prod region (us-east-1)
+## Resources Created
 
-1. AWS Config - S3 Bucket in Audit Account - Prod
-    * Versioning Enabled
-    * Replication Enabled
-1. AWS S3 Bucket Replication - Role
-1. AWS S3 Bucket Replication - Policy
-
-## Resources Created in Prod region (us-west-2)
-
-1. AWS Config - S3 Bucket in Audit Account - DR
-    * Versioning Enabled
-
-## Resources Created in both Prod and DR regions
-
-1. AWS Config Recorder
-1. Config Delivery Channel
-1. AWS Config - Role
+1. AWS Config - S3 Bucket
+1. AWS Config - Recorder
+1. AWS Config - Delivery Channel
+1. AWS Config - IAM Role
 1. AWS Config - Trust Policy
 1. AWS Config - SNS Topic
 1. AWS Config - sns:Publish Policy
@@ -67,5 +52,3 @@ Config_Baseline creates the base configuration for AWS Config in Prod region (us
     1. s3BucketName
     1. snsTopicArn
     1. cloudWatchLogsLogGroupArn
-
-#QA test

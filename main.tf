@@ -1,3 +1,7 @@
+terraform {
+  required_version = ">= 0.11.3"
+}
+
 # account information
 data "aws_caller_identity" "current" {}
 
@@ -22,22 +26,6 @@ data "template_file" "config_role_snspublish_policy_tpl" {
 
   vars {
     config_sns_arn = "${aws_sns_topic.config_sns_topic.arn}"
-    config_sns_dr_arn = "${aws_sns_topic.config_sns_topic_dr.arn}"
-  }
-}
-
-# template file for bucket replication role trust
-data "template_file" "config_bucket_repl_role_trust_policy_tpl" {
-  template = "${file("${path.module}/policies/config-bucket-repl-role-trust-policy.tpl")}"
-}
-
-# template file for bucket replication role policy
-data "template_file" "config_bucket_repl_role_policy_tpl" {
-  template = "${file("${path.module}/policies/config-bucket-repl-role-policy.tpl")}"
-
-  vars {
-    config_bucket_arn    = "${aws_s3_bucket.config_bucket.arn}"
-    config_bucket_dr_arn = "${aws_s3_bucket.config_bucket_dr.arn}"
   }
 }
 
@@ -61,16 +49,14 @@ resource "aws_config_delivery_channel" "config_delivery_channel" {
   depends_on     = ["aws_config_configuration_recorder.config_recorder"]
 }
 
-# aws config s3 bucket - prod
+# aws config s3 bucket
 resource "aws_s3_bucket" "config_bucket" {
-  provider      = "aws.audit-prod"
   force_destroy = true
-  bucket        = "tiaa-${var.account_alias}-config-logs-prod"
+  bucket        = "${var.account_alias}-config-logs"
 }
 
 # aws config s3 bucket policy
 resource "aws_s3_bucket_policy" "config_bucket_policy" {
-  provider = "aws.audit-prod"
   bucket   = "${aws_s3_bucket.config_bucket.id}"
   policy   = "${data.template_file.config_role_s3_bucket_policy_tpl.rendered}"
 }
