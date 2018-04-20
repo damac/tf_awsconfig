@@ -28,9 +28,9 @@ Config_Baseline creates the base configuration for AWS Config with logging being
     * RequireLowercaseCharacters:true
     * RequireSymbols:true
     * RequireNumbers:true
-    * MinimumPasswordLength:8
-    * PasswordReusePrevention:true
-    * MaxPasswordAge:120
+    * MinimumPasswordLength: 20
+    * PasswordReusePrevention: 12
+    * MaxPasswordAge:90
 1. IAM_USER_NO_POLICIES_CHECK
 1. ROOT_ACCOUNT_MFA_ENABLED
 1. S3_BUCKET_PUBLIC_READ_PROHIBITED
